@@ -1,0 +1,18 @@
+
+.placeholder-height{
+    height: 20px;
+}
+.round-corner-white{
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 1px #f8f8f8;
+}
+
+.shadow-content {
+    height: 10px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0));
+}
+
+.bg-white{
+    background-color: white;
+}

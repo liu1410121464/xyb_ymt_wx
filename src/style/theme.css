@@ -1,0 +1,21 @@
+.theme-bg{
+    background-color: #0057FF;
+}
+.mr10{
+    margin-right:10px;
+}
+.ml10{
+    margin-left:10px;
+}
+.mb10{
+    margin-bottom: 10px;
+}
+.mt10{
+    margin-top: 10px;
+}
+.bg-white{
+    background-color: white;
+}
+.color-error{
+    color: var(--van-danger-color);
+}

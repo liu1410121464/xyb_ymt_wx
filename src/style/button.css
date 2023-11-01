@@ -1,0 +1,7 @@
+.button-large{
+    --van-button-border-radius:8px;
+    --van-button-default-font-size:18px;
+    font-weight: 500;
+    --van-button-primary-background-color:#0057FF;
+    --van-button-border-width:0px
+}
