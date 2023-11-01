@@ -3,7 +3,6 @@ import {
   setToken,
   removeToken,
 } from '@/utils/auth'
-// import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
