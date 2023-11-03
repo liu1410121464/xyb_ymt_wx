@@ -36,25 +36,22 @@ const token = window.location.href.indexOf('token') > -1 ? window.location.href.
 import { getService } from '@/api/one-code.js'
 onMounted(() => {
   // 使用vuex存储token
-  console.log('获取token', window.location.href.split('token=')[1])
   if (token) {
     store.dispatch('user/setToken', token)
-    getServiceList()
   }
+  getServiceList()
 });
 // 获取服务
 function getServiceList () {
   let parmas = {
     cityCode: '430100000000',
-    version: 1,
+    version: '',
     source: 'APPLET',
   }
   getService(parmas).then(res => {
     userInfo.value = res.data
-    console.log('获取服务', userInfo)
     serveCheck(res.data)
   }).catch(err => {
-    console.log('获取服务失败', err)
     showPageThree.value = true;  //页面异常/未查询到可用的服务'
     showPageTwo.value = false;
     abnormalData.value = '未查询到可用的服务';
@@ -71,16 +68,14 @@ function serveCheck (value) {
     showPageTwo.value = false;
     abnormalData.value = '未查询到可用的服务';
   } else {
-    isAbnormal.value.forEach(item => {
-      if (item.sceneId == 100) {
-        if (item.state == 'UPHOLD' || item.state == 'OFFLINE') {
-          abnormalData.value = item.stateName;
-          showPageThree.value = true;  //页面异常
-          showPageTwo.value = false;
-        } else {
-          showPageThree.value = false;
-          showPageTwo.value = true;   //页面正常
-        }
+    isAbnormal.value.serviceList.forEach(item => {
+      if (item.state == 'UPHOLD' || item.state == 'OFFLINE') {
+        abnormalData.value = item.stateName;
+        showPageThree.value = true;  //页面异常
+        showPageTwo.value = false;
+      } else {
+        showPageThree.value = false;
+        showPageTwo.value = true;   //页面正常
       }
     });
   }

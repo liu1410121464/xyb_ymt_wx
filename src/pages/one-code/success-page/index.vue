@@ -3,7 +3,7 @@
     <div class="success-main">
       <div class="mid-sucs" v-show="sucsShow">
         <div class="code">
-          <van-image class="image" width="182" height="182" :src="require('@/assets/one-code/img-code.png')" />
+          <van-image class="image" width="182" height="182" :src="scanCodeImg" />
           <div class="tips">
             <div class="words">二维码每分钟自动刷新</div>
             <div class="refresh">刷新</div>
@@ -12,7 +12,7 @@
         <div class="information">
           <van-image width="40" height="40" :src="require('@/assets/one-code/icon-infor.png')" />
           <div class="specific-info">
-            <div class="name">{{props.userInfo.userName}}（{{props.userInfo.id}}）</div>
+            <div class="name">{{props.userInfo.userName}}（{{props.userInfo.certNo}}）</div>
             <div class="tel">手机号：{{props.userInfo.phoneNumber}}</div>
           </div>
         </div>
@@ -42,9 +42,7 @@
             <span>随机码</span>请出示随机码或二维码进行核验
           </div>
           <div class="square-main">
-            <div v-for="(item, index) in num" :key="index" class="square">
-              {{item}}
-            </div>
+            <div v-for="(item, index) in accommodationNum" :key="index" class="square">{{item}}</div>
           </div>
           <div class="countdown">
             <van-image width="15" height="15" :src="require('@/assets/one-code/icon-time.png')" />
@@ -56,57 +54,165 @@
         </div>
       </div>
     </van-popup>
+    <van-popup v-model:show="showInternet" round position="bottom" :style="{ height: '40%' }" closeable close-icon-position="top-right" @close="closePopupInternet">
+      <div class="popup">
+        <div class="popup-title">{{stayTitle}}</div>
+        <div class="popup-main">
+          <div class="name">
+            <span>随机码</span>请出示随机码或二维码进行核验
+          </div>
+          <div class="square-main">
+            <div v-for="(item, index) in internetNum" :key="index" class="square">{{item}}</div>
+          </div>
+          <div class="countdown">
+            <van-image width="15" height="15" :src="require('@/assets/one-code/icon-time.png')" />
+            <span class="time">倒计时：{{intTime}}s</span>
+          </div>
+        </div>
+        <div class="popup-footer">
+          <van-button @click="closePopupInternet" class="btn-close">关闭</van-button>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, defineProps } from 'vue';
+import { getResidentCode, getAccommodation, getInternet } from '@/api/one-code.js';
+const QRCode = require('qrcode')
 const props = defineProps({
   userInfo: {
     type: Object,
-    default: () => {}
+    default: () => { }
   }
 });
+const scanCodeImg = ref('');
 const sucsShow = ref(true);
 const failShow = ref(false);
 const time = ref(120);
+const intTime = ref(120);
 const showStay = ref(false); //住宿登记弹框
+const showInternet = ref(false); //网吧登记弹框
 const stayTitle = ref('');
-const num = ref(JSON.stringify(Math.random()).slice(2, 10)); //随机值
+const accommodationNum = ref(''); //住宿登记随机码
+const internetNum = ref(''); //网吧登记随机码
 var timer = null;
+var intTimer = null;
 const registerList = ref([
   { name: '住宿登记', url: require('@/assets/one-code/icon-zhusu.png') },
   { name: '网吧登记', url: require('@/assets/one-code/icon-wangba.png') },
 ]);
-onMounted (() => {
+onMounted(() => {
+  getResidentCodeImg()
 });
 onbeforeunload = function () {
   clearInterval(timer)
 }
-
+// 创建二维码（居民码）
+function getResidentCodeImg () {
+  getResidentCode().then(res => {
+    console.log(res)
+    scanCodeImg.value = createQRCode(JSON.parse(res.data))
+  }).catch(err => {
+    console.log(err)
+  })
+}
+// uuid转换成二维码
+async function createQRCode(uuid) {
+  try {
+    scanCodeImg.value = await QRCode.toDataURL(uuid)
+    console.log(scanCodeImg)
+  } catch (err) {
+    console.error(err)
+  }
+}
+// 住宿登记随机码（居民码）
+function getAccommodationImg () {
+  getAccommodation().then(res => {
+    console.log('住宿登记随机码（居民码）',JSON.parse(res.data).data)
+    accommodationNum.value = JSON.parse(res.data).data
+    
+  }).catch(err => {
+    console.log(err)
+  })
+}
+// 网吧登记随机码（居民码）
+function getInternetImg () {
+  getInternet().then(res => {
+    console.log('网吧登记随机码',JSON.parse(res.data).data)
+    internetNum.value = JSON.parse(res.data).data
+  }).catch(err => {
+    console.log(err)
+  })
+}
 function linkTo (item) {
-  showStay.value = true
-  // 初始化倒计时
-  clearInterval(timer)
-  timer = setInterval(() => {
-    time.value--
-    if (time.value == 0) {
-      // clearInterval(timer)
-      num.value = JSON.stringify(Math.random()).slice(2, 10)
-      time.value = 120
-    }
-  }, 1000);
   if (item.name == '住宿登记') {
     stayTitle.value = '住宿登记'
+    showStay.value = true
+    showInternet.value = false
+    if (accommodationNum.value) {
+      // 初始化倒计时
+      clearInterval(timer)
+      timer = setInterval(() => {
+        time.value--
+        if (time.value == 0) {
+          getAccommodationImg()
+          // clearInterval(timer)
+          time.value = 120
+        }
+      }, 1000);
+    } else {
+      getAccommodationImg()
+      clearInterval(timer)
+      timer = setInterval(() => {
+        time.value--
+        if (time.value == 0) {
+          getAccommodationImg()
+          // clearInterval(timer)
+          time.value = 120
+        }
+      }, 1000);
+    }
+    
   } else {
+    showInternet.value = true
+    showStay.value = false
     stayTitle.value = '网吧登记'
+    if(internetNum.value){
+      // 初始化倒计时
+      clearInterval(intTimer)
+      intTimer = setInterval(() => {
+        intTime.value--
+        if (intTime.value == 0) {
+          getInternetImg()
+          // clearInterval(timer)
+          intTime.value = 120
+        }
+      }, 1000);
+    }else{
+      getInternetImg()
+      // 初始化倒计时
+      clearInterval(intTimer)
+      intTimer = setInterval(() => {
+        intTime.value--
+        if (intTime.value == 0) {
+          getInternetImg()
+          // clearInterval(timer)
+          intTime.value = 120
+        }
+      }, 1000);
+    }
   }
 }
 // 关闭弹窗
 function closePopup () {
   showStay.value = false
 }
-
+// 关闭网吧登记弹窗
+function closePopupInternet () {
+  showInternet.value = false
+}
 // 刷新二维码
 function handleRefresh () {
   sucsShow.value = true;
@@ -239,7 +345,7 @@ function handleRefresh () {
           font-weight: 500;
         }
       }
-      .square-main{
+      .square-main {
         display: flex;
         justify-content: center;
         margin: 14px 0;
@@ -255,7 +361,6 @@ function handleRefresh () {
           align-items: center;
           justify-content: center;
         }
-
       }
       .countdown {
         display: flex;
