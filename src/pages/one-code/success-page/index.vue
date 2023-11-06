@@ -6,7 +6,7 @@
           <van-image class="image" width="182" height="182" :src="scanCodeImg" />
           <div class="tips">
             <div class="words">二维码每分钟自动刷新</div>
-            <div class="refresh">刷新</div>
+            <div class="refresh" @click="refreshCode">刷新</div>
           </div>
         </div>
         <div class="information">
@@ -113,9 +113,11 @@ onbeforeunload = function () {
 function getResidentCodeImg () {
   getResidentCode().then(res => {
     console.log(res)
-    scanCodeImg.value = createQRCode(JSON.parse(res.data))
+    scanCodeImg.value = createQRCode(res.data)
+    this.sucsShow = true;
   }).catch(err => {
     console.log(err)
+    this.failShow = false
   })
 }
 // uuid转换成二维码
@@ -215,8 +217,11 @@ function closePopupInternet () {
 }
 // 刷新二维码
 function handleRefresh () {
-  sucsShow.value = true;
-  failShow.value = false;
+  getResidentCodeImg()
+}
+// 刷新二维码
+function refreshCode () {
+  getResidentCodeImg()
 }
 </script>
 
