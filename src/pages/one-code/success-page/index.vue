@@ -88,8 +88,8 @@ const props = defineProps({
   }
 });
 const scanCodeImg = ref('');
-const sucsShow = ref(true);
-const failShow = ref(false);
+const sucsShow = ref(false);
+const failShow = ref(true);
 const time = ref(120);
 const intTime = ref(120);
 const showStay = ref(false); //住宿登记弹框
@@ -114,10 +114,12 @@ function getResidentCodeImg () {
   getResidentCode().then(res => {
     console.log(res)
     scanCodeImg.value = createQRCode(res.data)
-    this.sucsShow = true;
+    sucsShow.value = true;
+    failShow.value = false;
   }).catch(err => {
     console.log(err)
-    this.failShow = false
+    failShow.value = true
+    sucsShow.value = false;
   })
 }
 // uuid转换成二维码
