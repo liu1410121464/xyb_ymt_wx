@@ -16,7 +16,7 @@ server {
         root  /usr/share/nginx;
     }
 
-	  location /dev-api/{
+	  location /proxy/ymtopm/{
 	      client_max_body_size 10M;
 		    access_log /var/log/nginx/access_demo-api.log  main;
 	      # 调用ClusterIP内部服务，环境变量: $SVC_NAME服务名、$SVC_NAMESPACE服务所在命名空间、$SVC_CLUSTER服务所在命名空间、$SVC_PORT 服务端口
