@@ -1,5 +1,4 @@
 // 20230306 devx add 文件路径添加时间戳
-
 module.exports = {
     // cli3 代理是从指定的target后面开始匹配的，不是任意位置；配置pathRewrite可以做替换
     devServer: {
@@ -21,5 +20,5 @@ module.exports = {
     assetsDir: 'static',
     lintOnSave: process.env.NODE_ENV === 'development',
     productionSourceMap: false,
-    filenameHashing: false // 打包的时候用时间戳来确定文件
+    filenameHashing: true, // 打包的时候用时间戳来确定文件
 }

@@ -32,7 +32,7 @@ const errorMsg = ref(''); //获取服务列表失败的提示语
 const isAbnormal = ref(null); //判断展示的页面是否异常
 const store = useStore()
 const userInfo = ref({}); //获取服务列表
-const token = window.location.href.indexOf('token') > -1 ? window.location.href.split('token=')[1] : null
+const token = window.location.href.indexOf('token') > -1 ? window.location.href.split('token=')[1].split('&')[0] : null
 import { getService } from '@/api/one-code.js'
 onMounted(() => {
   // 使用vuex存储token

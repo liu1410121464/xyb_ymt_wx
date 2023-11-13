@@ -144,8 +144,8 @@ function getAccommodationImg () {
 // 网吧登记随机码（居民码）
 function getInternetImg () {
   getInternet().then(res => {
-    console.log('网吧登记随机码',JSON.parse(res.data).data)
-    internetNum.value = JSON.parse(res.data).data
+    console.log('网吧登记随机码',res)
+    internetNum.value = JSON.parse(res.data).msg
   }).catch(err => {
     console.log(err)
   })
