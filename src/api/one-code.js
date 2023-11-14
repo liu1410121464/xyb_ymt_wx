@@ -28,3 +28,11 @@ export function getInternet () {
     method: 'get'
   })
 }
+// 获取登记码配置列表
+export function getRegisterCode (data) {
+  return request({
+    url: `/api/ymt/residentCode/V1/getFunctionInfo?identifying=${data.identifying}&cityCode=${data.cityCode}&serviceId=${data.serviceId}`,
+    method: 'get',
+    data
+  })
+}

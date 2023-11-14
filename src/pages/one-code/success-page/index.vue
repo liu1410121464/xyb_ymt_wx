@@ -27,7 +27,7 @@
     <div class="register-app">
       <div class="main">
         <div class="item" v-for="(item, index) in registerList" :key="index" @click="linkTo(item)">
-          <van-image class="image" width="50" :src="item.url" />
+          <van-image class="image" width="50" :src="item.avatar" />
           <div class="name">{{ item.name }}</div>
         </div>
       </div>
@@ -85,8 +85,16 @@ const props = defineProps({
   userInfo: {
     type: Object,
     default: () => { }
+  },
+  registerList: {
+    type: Array,
+    default: () => { }
   }
 });
+// [
+//   { name: '住宿登记', url: require('@/assets/one-code/icon-zhusu.png') },
+//   { name: '网吧登记', url: require('@/assets/one-code/icon-wangba.png') },
+// ]
 const scanCodeImg = ref('');
 const sucsShow = ref(false);
 const failShow = ref(true);
@@ -99,16 +107,13 @@ const accommodationNum = ref(''); //住宿登记随机码
 const internetNum = ref(''); //网吧登记随机码
 var timer = null;
 var intTimer = null;
-const registerList = ref([
-  { name: '住宿登记', url: require('@/assets/one-code/icon-zhusu.png') },
-  { name: '网吧登记', url: require('@/assets/one-code/icon-wangba.png') },
-]);
 onMounted(() => {
   getResidentCodeImg()
 });
 onbeforeunload = function () {
   clearInterval(timer)
 }
+
 // 创建二维码（居民码）
 function getResidentCodeImg () {
   getResidentCode().then(res => {
@@ -123,7 +128,7 @@ function getResidentCodeImg () {
   })
 }
 // uuid转换成二维码
-async function createQRCode(uuid) {
+async function createQRCode (uuid) {
   try {
     scanCodeImg.value = await QRCode.toDataURL(uuid)
     console.log(scanCodeImg)
@@ -134,9 +139,8 @@ async function createQRCode(uuid) {
 // 住宿登记随机码（居民码）
 function getAccommodationImg () {
   getAccommodation().then(res => {
-    console.log('住宿登记随机码（居民码）',JSON.parse(res.data).data)
+    console.log('住宿登记随机码（居民码）', JSON.parse(res.data).data)
     accommodationNum.value = JSON.parse(res.data).data
-    
   }).catch(err => {
     console.log(err)
   })
@@ -144,7 +148,7 @@ function getAccommodationImg () {
 // 网吧登记随机码（居民码）
 function getInternetImg () {
   getInternet().then(res => {
-    console.log('网吧登记随机码',res)
+    console.log('网吧登记随机码', res)
     internetNum.value = JSON.parse(res.data).msg
   }).catch(err => {
     console.log(err)
@@ -178,12 +182,12 @@ function linkTo (item) {
         }
       }, 1000);
     }
-    
+
   } else {
     showInternet.value = true
     showStay.value = false
     stayTitle.value = '网吧登记'
-    if(internetNum.value){
+    if (internetNum.value) {
       // 初始化倒计时
       clearInterval(intTimer)
       intTimer = setInterval(() => {
@@ -194,7 +198,7 @@ function linkTo (item) {
           intTime.value = 120
         }
       }, 1000);
-    }else{
+    } else {
       getInternetImg()
       // 初始化倒计时
       clearInterval(intTimer)
@@ -212,10 +216,14 @@ function linkTo (item) {
 // 关闭弹窗
 function closePopup () {
   showStay.value = false
+  // 关闭后清除倒计时
+  clearInterval(timer)
 }
 // 关闭网吧登记弹窗
 function closePopupInternet () {
   showInternet.value = false
+  // 关闭后清除倒计时
+  clearInterval(intTimer)
 }
 // 刷新二维码
 function handleRefresh () {

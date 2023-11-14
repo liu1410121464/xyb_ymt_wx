@@ -9,7 +9,7 @@
         <!-- 待开通：提示页面 -->
         <!-- <ObstaclesPage @changeObs="handleChange" v-show="showPageOne"></ObstaclesPage> -->
         <!-- 正常页面：二维码是否获取失败 -->
-        <SuccessPage v-show="showPageTwo" :userInfo="userInfo"></SuccessPage>
+        <SuccessPage v-show="showPageTwo" :userInfo="userInfo" :registerList="registerList"></SuccessPage>
         <!-- 异常页面：维护中/已下线/没有服务 -->
         <AbnormalPage :title="abnormalData" :errorMsg="errorMsg" v-show="showPageThree"></AbnormalPage>
       </div>
@@ -31,9 +31,11 @@ const abnormalData = ref('未查询到可用的服务'); //判断页面异常状
 const errorMsg = ref(''); //获取服务列表失败的提示语
 const isAbnormal = ref(null); //判断展示的页面是否异常
 const store = useStore()
-const userInfo = ref({}); //获取服务列表
+const userInfo = ref({}); //获取用户信息
+const serviceList = ref([]); //获取服务列表
+const registerList = ref([]); //获取随机码的配置列表
 const token = window.location.href.indexOf('token') > -1 ? window.location.href.split('token=')[1].split('&')[0] : null
-import { getService } from '@/api/one-code.js'
+import { getService, getRegisterCode } from '@/api/one-code.js'
 onMounted(() => {
   // 使用vuex存储token
   if (token) {
@@ -50,6 +52,8 @@ function getServiceList () {
   }
   getService(parmas).then(res => {
     userInfo.value = res.data
+    serviceList.value = res.data.serviceList
+    getRegisterCodeList()
     serveCheck(res.data)
   }).catch(err => {
     showPageThree.value = true;  //页面异常/未查询到可用的服务'
@@ -58,6 +62,24 @@ function getServiceList () {
     errorMsg.value = err.response.data.msg
 
   })
+}
+// 获取随机码的配置列表
+function getRegisterCodeList () {
+  setTimeout(() => {
+    if (serviceList.value.length) {
+      let parmas = {
+        serviceId: serviceList.value[0].id,
+        cityCode: '4301',
+        identifying: 1
+      }
+      getRegisterCode(parmas).then(res => {
+        console.log(res)
+        registerList.value = res.data
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  }, 600)
 }
 // 接收服务列表组件传来的值
 function serveCheck (value) {
