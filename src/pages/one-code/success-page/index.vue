@@ -155,24 +155,15 @@ function getInternetImg () {
   })
 }
 function linkTo (item) {
-  if (item.name == '住宿登记') {
-    stayTitle.value = '住宿登记'
+  stayTitle.value = item.name
+  if (item.code == 'stay_registration') {
     showStay.value = true
     showInternet.value = false
-    if (accommodationNum.value) {
-      // 初始化倒计时
-      clearInterval(timer)
-      timer = setInterval(() => {
-        time.value--
-        if (time.value == 0) {
-          getAccommodationImg()
-          // clearInterval(timer)
-          time.value = 120
-        }
-      }, 1000);
-    } else {
+    if (!accommodationNum.value) {
       getAccommodationImg()
-      clearInterval(timer)
+    }
+    // 初始化倒计时
+    clearInterval(timer)
       timer = setInterval(() => {
         time.value--
         if (time.value == 0) {
@@ -181,27 +172,15 @@ function linkTo (item) {
           time.value = 120
         }
       }, 1000);
-    }
 
-  } else {
+  } else if(item.code == 'internet_registration'){
     showInternet.value = true
     showStay.value = false
-    stayTitle.value = '网吧登记'
-    if (internetNum.value) {
-      // 初始化倒计时
-      clearInterval(intTimer)
-      intTimer = setInterval(() => {
-        intTime.value--
-        if (intTime.value == 0) {
-          getInternetImg()
-          // clearInterval(timer)
-          intTime.value = 120
-        }
-      }, 1000);
-    } else {
+    if (!internetNum.value) {
       getInternetImg()
-      // 初始化倒计时
-      clearInterval(intTimer)
+    }
+    // 初始化倒计时
+    clearInterval(intTimer)
       intTimer = setInterval(() => {
         intTime.value--
         if (intTime.value == 0) {
@@ -210,7 +189,6 @@ function linkTo (item) {
           intTime.value = 120
         }
       }, 1000);
-    }
   }
 }
 // 关闭弹窗
