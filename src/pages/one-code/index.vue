@@ -56,10 +56,11 @@ function getServiceList () {
     getRegisterCodeList()
     serveCheck(res.data)
   }).catch(err => {
+    console.log(err, '页面异常/未查询到可用的服务')
     showPageThree.value = true;  //页面异常/未查询到可用的服务'
     showPageTwo.value = false;
     abnormalData.value = '未查询到可用的服务';
-    errorMsg.value = err.response.data.msg
+    errorMsg.value = err
 
   })
 }

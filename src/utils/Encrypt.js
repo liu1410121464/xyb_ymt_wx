@@ -14,7 +14,7 @@ export function initKey () {
 //加密
 export function encryptText(cipherContent, key) {
     const aesKey = CryptoJS.enc.Utf8.parse(key);
-    const aesIv = CryptoJS.enc.Utf8.parse(Buffer.from(key).reverse().toString());
+    const aesIv = CryptoJS.enc.Utf8.parse(key.split('').reverse().join(''));
 
     const newValue = typeof cipherContent === 'string' ? cipherContent : cipherContent.toString()
     const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(newValue), aesKey, {
@@ -32,7 +32,7 @@ function deUrlSafe(url = ""){
 //解密
 export function decryptText(plainContent, key) {
     const aesKey = CryptoJS.enc.Utf8.parse(key);
-    const aesIv = CryptoJS.enc.Utf8.parse(Buffer.from(key).reverse().toString());
+    const aesIv = CryptoJS.enc.Utf8.parse(key.split('').reverse().join(''));
 
     const decrypt = CryptoJS.AES.decrypt(deUrlSafe(plainContent), aesKey, {
         iv: aesIv,
