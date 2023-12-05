@@ -6,12 +6,13 @@ import JSEncrypt from 'jsencrypt'
 const keyPair = new JSEncrypt()
 
 
-function initKey() {
+export function initKey () {
+    console.log("initKey",nanoid(16))
     return  nanoid(16);
 }
 
 //加密
-function encryptText(cipherContent, key) {
+export function encryptText(cipherContent, key) {
     const aesKey = CryptoJS.enc.Utf8.parse(key);
     const aesIv = CryptoJS.enc.Utf8.parse(Buffer.from(key).reverse().toString());
 
@@ -29,7 +30,7 @@ function deUrlSafe(url = ""){
     return url.replace(/_/g,"/").replace(/-/g,"+")
 }
 //解密
-function decryptText(plainContent, key) {
+export function decryptText(plainContent, key) {
     const aesKey = CryptoJS.enc.Utf8.parse(key);
     const aesIv = CryptoJS.enc.Utf8.parse(Buffer.from(key).reverse().toString());
 
@@ -48,7 +49,7 @@ function decryptText(plainContent, key) {
  * @param {*} publicKey 服务端的公钥
  * @returns
  */
-function encryptRsa(cipherContent, publicKey) {
+export function encryptRsa(cipherContent, publicKey) {
     const newValue = typeof cipherContent === 'string' ? cipherContent : cipherContent.toString()
     keyPair.setPublicKey(publicKey)
     return keyPair.encrypt(newValue) // 注意：加密类型为string
@@ -60,16 +61,7 @@ function encryptRsa(cipherContent, publicKey) {
  * @param {*} privateKey 解密私钥
  * @returns
  */
-function decryptRsa(plainContent, privateKey) {
+export function decryptRsa(plainContent, privateKey) {
     keyPair.setPrivateKey(privateKey)
     return keyPair.decrypt(plainContent)
-}
-
-
-export default {
-    initKey,
-    decryptText,
-    encryptText,
-    encryptRsa,
-    decryptRsa,
 }
