@@ -18,7 +18,12 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   app.use(Router).use(store).mount('#app');
 }
-
+// 去除console.log
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'uat') {
+  if (window) {
+    window.console.log = function() {}
+  }
+}
 // 全局异常捕获
 app.config.errorHandler = (err, instance, info) => {
   console.error('globalerr==>', err, instance, info);
