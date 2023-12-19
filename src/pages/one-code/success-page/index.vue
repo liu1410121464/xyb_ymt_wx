@@ -3,7 +3,7 @@
     <div class="success-main">
       <div class="mid-sucs" v-show="sucsShow">
         <div class="code">
-          <van-image class="image" width="182" height="182" :src="scanCodeImg" />
+          <van-image class="image" width="300" height="300" :src="scanCodeImg" />
           <div class="tips">
             <div class="words">二维码每分钟自动刷新</div>
             <div class="refresh" @click="refreshCode">刷新</div>

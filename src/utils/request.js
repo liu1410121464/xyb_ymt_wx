@@ -2,7 +2,7 @@
 import axios from 'axios'
 import { getTokenUrl } from '@/utils/auth'
 // vue3.0如何引入vant
-import { showLoadingToast } from 'vant'
+import { showLoadingToast, closeToast } from 'vant'
 import { initKey, encryptText, decryptText, encryptRsa } from '@/utils/Encrypt'
 const rsaKeyA = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPMasWaSl604E-PSoddS-tqPd7bjvGwqzb7b90NIyq7v58dokpsp15chk5qJEZKHfOhwgPmdmfi2u37NeGzlcUVcAGY3DYYhINmFn_B2a5MLp7GWGNN0pbLvjiLLsOLpRTiWK3W-utTeqiE5HjrUkVjMQF3SLTv6prAtguGkBdqwIDAQAB'
 // 初始化密钥
@@ -77,6 +77,8 @@ service.interceptors.response.use(
         responseData = decryptTexts
       }
     }
+    // 获取到数据之后，将loading隐藏
+    closeToast()
     console.log(responseData, 'responseData')
     // 未设置状态码则默认成功状态
     const code = responseData.code || 200
