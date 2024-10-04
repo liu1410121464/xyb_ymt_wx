@@ -7,6 +7,20 @@ export function getService (data) {
     data
   })
 }
+export function getUserInfo (data) {
+  return request({
+    url: '/getUserInfo',
+    method: 'post',
+    data
+  })
+}
+export function getToken (data) {
+  return request({
+    url: '/getToken',
+    method: 'post',
+    data
+  })
+}
 // 创建二维码（居民码）
 export function getResidentCode () {
   return request({

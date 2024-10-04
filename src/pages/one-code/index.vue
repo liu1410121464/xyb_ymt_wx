@@ -35,14 +35,34 @@ const userInfo = ref({}); //获取用户信息
 const serviceList = ref([]); //获取服务列表
 const registerList = ref([]); //获取随机码的配置列表
 const token = window.location.href.indexOf('token') > -1 ? window.location.href.split('token=')[1].split('&')[0] : null
-import { getService, getRegisterCode } from '@/api/one-code.js'
+// import { getService, getRegisterCode } from '@/api/one-code.js'
+import { getToken,getUserInfo } from '@/api/one-code.js'
 onMounted(() => {
   // 使用vuex存储token
   if (token) {
     store.dispatch('user/setToken', token)
   }
-  getServiceList()
+  // getServiceList()
+  tokenGet()
+  userInfoGet()
 });
+function tokenGet () {
+  getToken().then(res => {
+    console.log(res)
+  }).catch(err => {
+    console.log(err)
+  })
+}
+function userInfoGet () {
+  let parmas = {
+    id: '1'
+  }
+  getUserInfo(parmas).then(res => {
+    console.log(res)
+  }).catch(err => {
+    console.log(err)
+  })
+}
 // 获取服务
 function getServiceList () {
   let parmas = {
