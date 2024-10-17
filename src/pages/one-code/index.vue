@@ -39,9 +39,6 @@ const token = window.location.href.indexOf('token') > -1 ? window.location.href.
 import { getToken,getUserInfo } from '@/api/one-code.js'
 onMounted(() => {
   // 使用vuex存储token
-  if (token) {
-    store.dispatch('user/setToken', token)
-  }
   // getServiceList()
   tokenGet()
   userInfoGet()
@@ -49,6 +46,9 @@ onMounted(() => {
 function tokenGet () {
   getToken().then(res => {
     console.log(res)
+    if (token) {
+    store.dispatch('user/setToken', res)
+    }
   }).catch(err => {
     console.log(err)
   })
@@ -59,6 +59,8 @@ function userInfoGet () {
   }
   getUserInfo(parmas).then(res => {
     console.log(res)
+    showPageTwo.value = true
+    userInfo.value = res.data
   }).catch(err => {
     console.log(err)
   })

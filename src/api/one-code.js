@@ -24,7 +24,7 @@ export function getToken (data) {
 // 创建二维码（居民码）
 export function getResidentCode () {
   return request({
-    url: '/api/ymt/residentCode/V1/createCode',
+    url: '/residentCode/createCode',
     method: 'get'
   })
 }
